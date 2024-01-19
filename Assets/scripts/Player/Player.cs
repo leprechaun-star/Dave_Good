@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -31,12 +30,8 @@ public class Player : MonoBehaviour
 
     [Space]
 
-    [SerializeField] public float GroundedDrag;
-
-    [Space]
-
     [SerializeField] public bool CanCrouch;
-    [SerializeField] public bool CanJump;
+    [SerializeField] public bool isGrounded;
     [SerializeField] public bool canSprint;
     
     [Header("Player Move stuff")]
@@ -47,15 +42,11 @@ public class Player : MonoBehaviour
     private InputAction Sprint;
     private InputAction crouching;
     
-    [Space]
-    
     [Header("Stats")]
     [SerializeField] public float curHp;
     [SerializeField] public float maxHp;
     [SerializeField] public float DoHealth = 5;
     [SerializeField] public bool Heal;
-    
-    [Space]
     
     [Header("Crouching")]
     [SerializeField] public bool isCrouching;
@@ -66,6 +57,8 @@ public class Player : MonoBehaviour
 
     [Space]
 
+    [Header("Ground Check")]
+    [SerializeField] public float GroundedDrag;
     [SerializeField] public float ObjectEnter;
     [SerializeField] public float CheckChecker;
     [SerializeField] public GameObject CrouchCheck;
@@ -122,7 +115,18 @@ public class Player : MonoBehaviour
         ControlSpeed();
         MovePlayer();
 
-        if (CanJump)
+        //ground check
+        if (Physics.CheckSphere(GroundTransform.position, 0.25f, GroundMask))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+
+        //Drag when in air
+        if (isGrounded)
         {
             PlayerBody.drag = GroundedDrag;
         }
@@ -156,11 +160,6 @@ public class Player : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
-        
-    }
-
     private void MovePlayer()
     {
 
@@ -172,17 +171,10 @@ public class Player : MonoBehaviour
         //jumping
         if (Jump.WasPressedThisFrame())
         {
-            if (CanJump)
+            if (isGrounded)
             {
                 PlayerBody.AddForce(Vector3.up * Jumpforce, ForceMode.Impulse);
             }
-        }
-
-        if (Physics.CheckSphere(GroundTransform.position, 0.25f, GroundMask)){
-            CanJump = true;
-        }
-        else{
-            CanJump = false;
         }
 
         if (canSprint)

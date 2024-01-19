@@ -36,6 +36,7 @@ public class DavePistol : MonoBehaviour
 
     public GameObject FireParticle;
     public GameObject HitParticle;
+    public GameObject HitPoint;
     
     [Space]
 
@@ -146,15 +147,18 @@ public class DavePistol : MonoBehaviour
 
         GameManager.instance.PistolCurAmmo--;
 
+        ShotAnim.Play("PistolShot");
+
+        Instantiate(FireParticle, MuzzlePoint.position, MuzzlePoint.rotation);
+
         if (Physics.Raycast(CamPoint.position, transform.TransformDirection(Vector3.forward), out hit, Distance))
         {
             if(hit.collider.gameObject.TryGetComponent(out BetterEnemy hitinfo))
             {
                 hitinfo.TakeDamge(Damage);
             }
-            ShotAnim.Play("PistolShot");
 
-            Instantiate(FireParticle, MuzzlePoint.position, MuzzlePoint.rotation);
+            Instantiate(HitPoint, hit.point, Quaternion.identity);
             Instantiate(HitParticle, hit.point, Quaternion.identity);
         }
     }

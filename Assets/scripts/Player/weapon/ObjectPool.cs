@@ -9,15 +9,6 @@ public class ObjectPool : MonoBehaviour
 
     private List<GameObject> pooledObjs = new List<GameObject>();
 
-
-    void Start()
-    {
-        for(int x = 0; x < createOnStart; x++)
-        {
-            CreateNewObject();
-        }
-    }
-
     GameObject CreateNewObject()
     {
         GameObject obj = Instantiate(objPrefab);

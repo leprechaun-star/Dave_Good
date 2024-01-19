@@ -10,6 +10,14 @@ public class QuestBase : MonoBehaviour
     public TMP_Text QuestInfo;
     public bool DoingQuest;
 
+    public static QuestBase instance;
+
+    void Awake()
+    {
+        //set the instance to this script
+        instance = this;
+    }
+
     void Update()
     {
         if (QuestName.text == null)
